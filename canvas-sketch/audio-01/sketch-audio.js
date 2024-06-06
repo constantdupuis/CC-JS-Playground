@@ -1,4 +1,7 @@
 const canvasSketch = require('canvas-sketch');
+const math = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random');
+const eases = require('eases');
 
 const settings = {
   dimensions: [ 2048, 2048 ],
@@ -7,30 +10,111 @@ const settings = {
 
 let manager;
 let audio;
-let audioContext, audioData, sourceNode, analyserNode;
+let audioContext, audioData, audioDataBytes, sourceNode, analyserNode;
+let mappedAudioData;
 
 const sketch = () => {
-  return ({ context, width, height }) => {
-    context.fillStyle = 'white';
+
+  const numCircles = 5;
+  const numSlices = 9;
+  const slice = Math.PI * 2 / numSlices;
+  const radius = 200;
+
+  const bins = [];
+  const lineWidths = [];
+
+  let lineWidth, bin, mapped;
+
+  for( let i = 0; i < numCircles * numSlices; i++)
+  {
+    bin = random.rangeFloor(4,64);
+    bins.push(bin);
+  }
+
+  for( let i = 0; i < numCircles; i++)
+  {
+    const t = i / (numCircles -1);
+    lineWidth = eases.quadIn(t) * 200 + 20;
+    lineWidths.push( lineWidth);
+  }
+
+  console.log("Sketch");
+
+  return ({ context, width, height, time }) => {
+    context.fillStyle = '#EEEAE0';
     context.fillRect(0, 0, width, height);
 
     if( !audioContext) return;
 
-    analyserNode.getFloatFrequencyData(audioData);
+    //analyserNode.getFloatFrequencyData(audioData);
 
-    const avg = getAverage( audioData);
-    const ctx = context;
+    //console.log(audioData);
+
+    //const avg = getAverage( audioData);
+    // console.log("avg " + avg);
+    // const mapped = math.mapRange(avg, analyserNode.minDecibels * 2, analyserNode.maxDecibels, 0,1, true);
+    // console.log("mapped " + mapped);
+    // const radius = mapped * 200;
+    //console.log("radius " + radius);
+
+    analyserNode.getByteFrequencyData(audioDataBytes);
 
     context.save();
-
+    
     context.translate( width * 0.5, height * 0.5);
-    context.lineWidth = 10;
 
-    context.beginPath();
-    context.arc(0, 0, Math.abs(avg), 0, Math.PI * 2);
-    context.stroke();
+    let cradius = radius;
 
+    for( let i = 0; i < numCircles; i++)
+    {
+      context.save();
+      for( let j = 0; j < numSlices; j++)
+      {
+        //console.log("time " + time * 0.1);
+        context.rotate(slice + time * 0.1);
+        context.lineWidth = lineWidths[i];
+
+        bin = bins[i * numSlices + j];
+
+        mapped = math.mapRange(audioDataBytes[bin], 0, 255, 0, 1, true);
+
+        context.lineWidth = lineWidths[i] * mapped;
+
+        context.beginPath();
+        context.arc(0, 0, cradius + context.lineWidth * 0.5, 0, slice);
+        context.stroke();
+      }
+      cradius += lineWidths[i];
+
+      context.restore();
+    }
     context.restore();
+
+    // analyserNode.getByteFrequencyData(audioDataBytes);
+
+    // let ii = 0;
+    // for( let i = 0; i < bins.length; i++)
+    // {
+    //   ii = i +1;
+    //   const bin = bins[i];
+    //   //const avg = getAverage( audioDataBytes);
+    //   const mapped = math.mapRange(audioDataBytes[bin], 0, 255, 0,1, true);
+    //   const radius = mapped * 200 * ii;
+
+    //   console.log(mapped);
+
+    //   context.save();
+
+    //   context.translate( width * 0.5, height * 0.5);
+    //   context.lineWidth = 10 * ii;
+
+    //   context.beginPath();
+    //   context.arc(0, 0, radius, 0, Math.PI * 2);
+    //   context.stroke();
+
+    //   context.restore();
+    // }
+   
   };
 };
 
@@ -58,9 +142,16 @@ const createAudio = () => {
   sourceNode.connect( audioContext.destination);
 
   analyserNode = audioContext.createAnalyser();
-  sourceNode.connect( analyserNode);
+  analyserNode.fftSize = 512;
+  analyserNode.smoothingTimeConstant = 0.9;
+  // console.log("analyserNode.minDecibels : " + analyserNode.minDecibels);
+  // console.log("analyserNode.maxDecibels : " + analyserNode.maxDecibels);
+  
+  sourceNode.connect( analyserNode );
 
   audioData = new Float32Array( analyserNode.frequencyBinCount);
+  audioDataBytes = new Uint8Array( analyserNode.frequencyBinCount);
+  mappedAudioData  = new Float32Array( analyserNode.frequencyBinCount);
 }
 
 const getAverage = (data) =>{
