@@ -15,10 +15,10 @@ let mappedAudioData;
 
 const sketch = () => {
 
-  const numCircles = 5;
+  const numCircles = 8;
   const numSlices = 9;
   const slice = Math.PI * 2 / numSlices;
-  const radius = 200;
+  const radius = 100;
 
   const bins = [];
   const lineWidths = [];
@@ -27,7 +27,8 @@ const sketch = () => {
 
   for( let i = 0; i < numCircles * numSlices; i++)
   {
-    bin = random.rangeFloor(4,64);
+    bin = random.rangeFloor(4, 100);
+    if( random.value() > 0.5) bin = 0;
     bins.push(bin);
   }
 
@@ -38,7 +39,7 @@ const sketch = () => {
     lineWidths.push( lineWidth);
   }
 
-  console.log("Sketch");
+  //console.log("Sketch");
 
   return ({ context, width, height, time }) => {
     context.fillStyle = '#EEEAE0';
@@ -68,13 +69,19 @@ const sketch = () => {
     for( let i = 0; i < numCircles; i++)
     {
       context.save();
+      //console.log("i " + i + " time * (0.5 * (numCircles+1)) : " + time * (0.5 * (numCircles+1)));
+      context.rotate(time * 0.1 * i);
+
       for( let j = 0; j < numSlices; j++)
       {
         //console.log("time " + time * 0.1);
-        context.rotate(slice + time * 0.1);
+        //context.rotate(slice + time * 0.1);
+        context.rotate(slice);
         context.lineWidth = lineWidths[i];
+        //if( context.lineWidth < 1) continue;
 
         bin = bins[i * numSlices + j];
+        if( bin == 0) continue;
 
         mapped = math.mapRange(audioDataBytes[bin], 0, 255, 0, 1, true);
 
@@ -84,6 +91,7 @@ const sketch = () => {
         context.arc(0, 0, cradius + context.lineWidth * 0.5, 0, slice);
         context.stroke();
       }
+
       cradius += lineWidths[i];
 
       context.restore();
@@ -135,7 +143,7 @@ const addListeners = () => {
 
 const createAudio = () => {
   audio = document.createElement('audio');
-  audio.src = 'media/A night in Tunisia.mp3';
+  audio.src = 'media/bye-bye-blackbird-arranged-by-mark-taylor.mp3';
 
   audioContext = new AudioContext();
   sourceNode = audioContext.createMediaElementSource(audio);
@@ -146,6 +154,7 @@ const createAudio = () => {
   analyserNode.smoothingTimeConstant = 0.9;
   // console.log("analyserNode.minDecibels : " + analyserNode.minDecibels);
   // console.log("analyserNode.maxDecibels : " + analyserNode.maxDecibels);
+  console.log("analyserNode.frequencyBinCount " + analyserNode.frequencyBinCount);
   
   sourceNode.connect( analyserNode );
 
