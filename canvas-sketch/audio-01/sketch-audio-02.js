@@ -16,8 +16,8 @@ let mappedAudioData;
 
 const sketch = () => {
 
-  const numCircles = 8;
-  const numSlices = 9;
+  const numCircles = 12;
+  const numSlices = 1;
   const slice = Math.PI * 2 / numSlices;
   const radius = 100;
 
@@ -25,16 +25,16 @@ const sketch = () => {
   const lineWidths = [];
   const colors = chroma.scale(['#fafa6e','#2A4858'])
                     .mode('rgb').colors(numCircles);
+  const rotationOffsets = [];
 
-  console.log(colors);
-  console.log("color " + colors);
+  // console.log(colors);
+  // console.log("color " + colors);
 
-  let lineWidth, bin, mapped;
+  let lineWidth, bin, mapped, phi;
 
   for( let i = 0; i < numCircles * numSlices; i++)
   {
     bin = random.rangeFloor(4, 100);
-    if( random.value() > 0.5) bin = 0;
     bins.push(bin);
   }
 
@@ -43,6 +43,11 @@ const sketch = () => {
     const t = i / (numCircles -1);
     lineWidth = eases.quadIn(t) * 200 + 20;
     lineWidths.push( lineWidth);
+  }
+
+  for( let i = 0; i < numCircles; i++)
+  {
+    rotationOffsets.push(random.range(Math.PI * -0.25, Math.PI * 0.25));
   }
 
   //console.log("Sketch");
@@ -76,7 +81,11 @@ const sketch = () => {
     {
       context.save();
       //console.log("i " + i + " time * (0.5 * (numCircles+1)) : " + time * (0.5 * (numCircles+1)));
-      context.rotate(time * 0.03 * i);
+      //context.rotate(time * 0.03 * i);
+      //context.rotate((0.3 * i) + time * 0.04);
+      context.rotate(rotationOffsets[i] + time * 0.04);
+      
+      cradius += lineWidths[i] * 0.2 + 1;
 
       for( let j = 0; j < numSlices; j++)
       {
@@ -87,19 +96,18 @@ const sketch = () => {
         //if( context.lineWidth < 1) continue;
 
         bin = bins[i * numSlices + j];
-        if( bin == 0) continue;
 
         mapped = math.mapRange(audioDataBytes[bin], 0, 255, 0, 1, true);
 
-        context.lineWidth = lineWidths[i] * mapped;
+        phi = slice * mapped;
 
         context.beginPath();
-        context.arc(0, 0, cradius + context.lineWidth * 0.5, 0, slice);
+        context.arc(0, 0, cradius + context.lineWidth * 0.5, 0, phi);
         context.strokeStyle = colors[i];
         context.stroke();
       }
 
-      cradius += lineWidths[i];
+      cradius += lineWidths[i] * 0.5;
 
       context.restore();
     }
@@ -158,7 +166,7 @@ const createAudio = () => {
 
   analyserNode = audioContext.createAnalyser();
   analyserNode.fftSize = 512;
-  analyserNode.smoothingTimeConstant = 0.9;
+  analyserNode.smoothingTimeConstant = 0.95;
   // console.log("analyserNode.minDecibels : " + analyserNode.minDecibels);
   // console.log("analyserNode.maxDecibels : " + analyserNode.maxDecibels);
   console.log("analyserNode.frequencyBinCount " + analyserNode.frequencyBinCount);
