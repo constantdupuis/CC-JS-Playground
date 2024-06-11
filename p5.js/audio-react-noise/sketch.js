@@ -1,20 +1,109 @@
+
+class ParticleSystem
+{
+
+}
+class Particle
+{
+  x = 0;
+  y = 0;
+  vx = 0;
+  vy = 0;
+  ttl = -1000;
+
+  constructor( posx, posy)
+  {
+    this.x = posx;
+    this.y = posy;
+    this.ttl = -1000;
+  }
+
+  setVelocity( nvx, nvy)
+  {
+    this.vx = nvx;
+    this.vy = nvy;
+  }
+
+  update( deltaTime)
+  {
+    const lDeltaTime = deltaTime/1000; // milliseconds to seconds
+
+    this.x += this.vx * lDeltaTime;
+    this.y += this.vy * lDeltaTime;
+
+    if( this.ttl != -1000 )
+    {
+      if( this.ttl > 0)
+      {
+        //console.log("ttl before update : " + this.ttl + " deltaTime : " + lDeltaTime);
+        this.ttl -= lDeltaTime;
+        //console.log("ttl after update : " + this.ttl);
+        if( this.ttl < 0) 
+        {
+          //console.log("particle is dead");
+          this.ttl = 0;
+        }
+      }
+    }
+  }
+
+  setTimeToLive( ttl)
+  {
+    this.ttl = ttl;
+  }
+
+  immortal()
+  {
+    this.ttl = -1000;
+  }
+
+  get isDead()
+  {
+    if( this.ttl == -1000) return false;
+    if( this.ttl == 0) return true;
+    return false;
+  }
+
+  get isAlive()
+  {
+    if( this.ttl == -1000) return true;
+    if( this.ttl > 0) return true;
+    return false;
+  }
+
+  toString()
+  {
+    return "Particle x : " + this.x + " y : " + this.y;
+  }
+}
+
+let particles = [];
+let particlesCount = 1;
+
 function setup() {
     //SetCanvasSize();
     createCanvas(800, 800);
+    angleMode(DEGREES);
 
     // Noise settings
     // noiseSeed(195735482);
     // noiseDetail(3, 0.5);
 
-    console.time('generate noisemap');
-    GenerateNoiseMap(width, height);
-    console.timeEnd('generate noisemap');
+    NoiseMapGenerate(width, height);
+    NoiseMapShowStats();
 
-    NoiseMapShowStats()
+    for( x = 0; x < particlesCount; x++)
+    {
+      const p = new Particle(random(width), random(height));
+      p.setVelocity( random() * 100, random() * 100);
+      p.setTimeToLive(2 + random(5));
+      particles.push(p);
+    }
 
-
+    background(220);
+    NoiseMapDraw();
     // Turn off the draw loop.
-    noLoop();
+    //noLoop();
 }
 
 
@@ -26,37 +115,66 @@ function setup() {
 
 
 function draw() {
-  background(220);
-  console.time("draw");
-  for( let i =0; i < width; i++)
-    for(let j = 0; j < height; j++)
+  
+  stroke(0);
+  //noStroke();
+  noFill();
+  for( x = 0; x < particlesCount; x++)
   {
-    // let n = 255 * noise(i*0.01,j*0.01);
-    //console.time('peek noise');
-    let n = 255 * GetNoiseFromMap(i,j);
-    //console.timeEnd('peek noise');
+    const p = particles[x];
+    if( p.isAlive ){
+      circle(p.x, p.y, 10);
+      console.log("particule  : " + x + " pos x : "  + p.x + " y : " + p.y);
+      console.log("deltaTime  : " + deltaTime);
+      // const n = NoiseMapGetAt(p.x, p.y);
+      // //console.log("noise pour particule  : " + x + "  = "  + n);
+      // const vx = cos(n*360) * 100;
+      // const vy = sin(n*360) * 100;
+      // //console.log("new velocity x : " + vx + "  y :"  + vy);
+      // p.setVelocity(vx, vy);
+      p.update(deltaTime);
+      KeepInside(p);
+    }
 
-    //console.time('drawPoint');
-    stroke(n);
-    point(i,j);
-    //console.timeEnd('drawPoint');
   }
-  console.timeEnd("draw");
+  //NoiseMapDraw();
+}
+
+function KeepInside(p)
+{
+  if( p.x < 0 ) 
+  {
+    p.x = width;
+  }
+  else if(p.x > width)
+  {
+    p.x = 0;
+  }
+
+  if( p.y < 0 ) 
+  {
+    p.y = height;
+  }
+  else if(p.y > height)
+  {
+    p.y = 0;
+  }
 }
 
 let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.01;
+let noiseScale = 0.005;
 let noiseOctaveNumber = 4;
-let noiseOctaveFalloff = 0.5;
+let noiseOctaveFalloff = 0.45;
 let noiseMapSeed = 49852321;
 let noiseMapMaxNoise = 0;
 let noiseMapMinNoise = 1;
 
-function GenerateNoiseMap(nmWidth, nmHeight)
+function NoiseMapGenerate(nmWidth, nmHeight)
 {
+  console.time('generate noisemap');
   noiseMap = [];
   noiseMapWidth = nmWidth;
   noiseMapHeight = nmHeight;
@@ -80,10 +198,13 @@ function GenerateNoiseMap(nmWidth, nmHeight)
       noiseMap[noiseIndex] = noiseVal;
     }
   }
+  console.timeEnd('generate noisemap');
 }
 
-function GetNoiseFromMap(x,y)
+function NoiseMapGetAt(x,y)
 {
+  x = floor(x);
+  y = floor(y);
   if( noiseMapSize == 0) return -1;
   const noiseIndex = (y * width) + x;
   if( noiseIndex < noiseMapSize)
@@ -91,6 +212,20 @@ function GetNoiseFromMap(x,y)
     return noiseMap[noiseIndex];
   }
   return -1;
+}
+
+function NoiseMapDraw()
+{
+  console.time("draw noise map");
+  for( let i =0; i < width; i++)
+    for(let j = 0; j < height; j++)
+  {
+    let n = 255 * NoiseMapGetAt(i,j);
+    
+    stroke(n);
+    point(i,j);
+  }
+  console.timeEnd("draw noise map");
 }
 
 function NoiseMapShowStats()
