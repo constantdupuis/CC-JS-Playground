@@ -1,7 +1,7 @@
 {
   "name": "first-again",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "sketch.js",
   "scripts": {
     "start": "browser-sync start --server --files \"*\"",
     "test": "echo \"Error: no test specified\" && exit 1"
