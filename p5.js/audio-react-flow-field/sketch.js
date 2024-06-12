@@ -17,6 +17,8 @@ let isRunning = false;
 
 const particulesToBins = new Map();
 
+let colorScale;
+
 function preload()
 {
   console.time('load audio file');
@@ -34,12 +36,16 @@ function setup() {
     // noiseSeed(195735482);
     // noiseDetail(3, 0.5);
     fft = new p5.FFT();
-    fft.smooth(0.7);
+    fft.smooth(0.5);
     binsCount = fft.bins;
     sound.amp(0.2);
 
     NoiseMapGenerate(width, height);
     NoiseMapShowStats();
+
+    console.log("chroma = " + chroma);
+    colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
+    console.log("colorScale = " + colorScale);
 
     particlesAlive = particlesCount;
     for( x = 0; x < particlesCount; x++)
@@ -51,8 +57,10 @@ function setup() {
       particles.push(p);
       particulesToBins[x] = floor(random(0, binsCount / 2));
     }
-
-    background(255);
+    console.log("Color : " + colorScale(0.1));
+    const c = color( colorScale(0.1).hex() );
+    console.log("Color : " + c);
+    background(c);
     //NoiseMapDraw();
     // Turn off the draw loop.
     //noLoop();
@@ -71,7 +79,9 @@ function draw() {
   //stroke(0, 32);
   noStroke();
   //noFill();
-  fill(0, particlesAlpha);
+  let c = color(colorScale(0.25).hex());
+  c.setAlpha(particlesAlpha);
+  fill(c);
 
   spectrum = fft.analyze();
   //console.log("Spectrum length : " + spectrum.length);
