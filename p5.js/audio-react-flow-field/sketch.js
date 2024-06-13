@@ -1,11 +1,19 @@
 
 
-
+class FlowFieldLayer
+{
+  numberOfParticles = 100;
+  timeToLiveSec = 10;
+  colorRampIndex = 0.20;
+  baseSize = 1;
+  sizeFactor = 10;
+  speed = 100;
+}
 
 let particles = [];
 let particlesCount = 100;
 let noiseSpeed = 80;
-let particlesAlpha = 2;
+let particlesAlpha = 0.16;
 let particlesAlive = particlesCount;
 
 let sound;
@@ -53,12 +61,12 @@ function setup() {
       const p = new Particle(random(width), random(height));
       //const p = new Particle(width * 0.5, height * 0.95);
       //p.setVelocity( random() * 100, random() * 100);
-      p.setTimeToLive(180);
+      p.setTimeToLive(30);
       particles.push(p);
       particulesToBins[x] = floor(random(0, binsCount / 2));
     }
-    console.log("Color : " + colorScale(0.1));
-    const c = color( colorScale(0.1).hex() );
+    console.log("Color : " + colorScale(0.0));
+    const c = color( colorScale(0.0).hex() );
     console.log("Color : " + c);
     background(c);
     //NoiseMapDraw();
@@ -79,8 +87,8 @@ function draw() {
   //stroke(0, 32);
   noStroke();
   //noFill();
-  let c = color(colorScale(0.25).hex());
-  c.setAlpha(particlesAlpha);
+  let c = color(colorScale(0.25).alpha(0.05).hex());
+  //c.setAlpha(particlesAlpha);
   fill(c);
 
   spectrum = fft.analyze();
@@ -119,7 +127,7 @@ function draw() {
 
     if( particlesAlive == 0)
     {
-      
+      // switch flow field layer
     }
   }
   //NoiseMapDraw();
