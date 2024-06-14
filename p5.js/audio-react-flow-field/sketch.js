@@ -5,10 +5,16 @@ class FlowFieldLayer
   numberOfParticles = 100;
   timeToLiveSec = 10;
   colorRampIndex = 0.20;
+  colorAlpha = 0.16;
   baseSize = 1;
   sizeFactor = 10;
   speed = 100;
 }
+
+const flowLayers = [];
+let currentFlowLayer = null;
+let activeFlowLayerIdx = 0;
+
 
 let particles = [];
 let particlesCount = 100;
@@ -21,7 +27,7 @@ let binsCount;
 let fft;
 let spectrum;
 
-let isRunning = false;
+let isDrawing = false;
 
 const particulesToBins = new Map();
 
@@ -52,19 +58,82 @@ function setup() {
     NoiseMapShowStats();
 
     console.log("chroma = " + chroma);
-    colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
+    //colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
+    //colorScale = chroma.scale(['#219C90', '#FFF455', '#FFC700', '#EE4E4E']);
+    colorScale = chroma.scale(['#fafa6e', '#2A4858']);
     console.log("colorScale = " + colorScale);
 
-    particlesAlive = particlesCount;
-    for( x = 0; x < particlesCount; x++)
-    {
-      const p = new Particle(random(width), random(height));
-      //const p = new Particle(width * 0.5, height * 0.95);
-      //p.setVelocity( random() * 100, random() * 100);
-      p.setTimeToLive(30);
-      particles.push(p);
-      particulesToBins[x] = floor(random(0, binsCount / 2));
-    }
+    let fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 10;
+    fl.baseSize = 1;
+    fl.sizeFactor = 200;
+    fl.colorRampIndex = 0.25;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 10;
+    fl.baseSize = 1;
+    fl.sizeFactor = 100;
+    fl.colorRampIndex = 0.35;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 10;
+    fl.baseSize = 1;
+    fl.sizeFactor = 80;
+    fl.colorRampIndex = 0.45;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 15;
+    fl.baseSize = 1;
+    fl.sizeFactor = 50;
+    fl.colorRampIndex = 0.65;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 20;
+    fl.baseSize = 1;
+    fl.sizeFactor = 20;
+    fl.colorRampIndex = 0.85;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    fl = new FlowFieldLayer();
+    fl.timeToLiveSec = 30;
+    fl.baseSize = 1;
+    fl.sizeFactor = 10;
+    fl.colorRampIndex = 1.0;
+    fl.colorAlpha = 0.05;
+    fl.numberOfParticles = 100;
+    fl.speed = 60;
+    flowLayers.push(fl);
+
+    GenerateParticles();
+    // particlesAlive = particlesCount;
+    // for( x = 0; x < particlesCount; x++)
+    // {
+    //   const p = new Particle(random(width), random(height));
+    //   //const p = new Particle(width * 0.5, height * 0.95);
+    //   //p.setVelocity( random() * 100, random() * 100);
+    //   p.setTimeToLive(30);
+    //   particles.push(p);
+    //   particulesToBins[x] = floor(random(0, binsCount / 2));
+    // }
     console.log("Color : " + colorScale(0.0));
     const c = color( colorScale(0.0).hex() );
     console.log("Color : " + c);
@@ -83,11 +152,11 @@ function setup() {
 
 
 function draw() {
-  if( !isRunning) return;
+  if( !isDrawing) return;
   //stroke(0, 32);
   noStroke();
   //noFill();
-  let c = color(colorScale(0.25).alpha(0.05).hex());
+  let c = color(colorScale(currentFlowLayer.colorRampIndex).alpha(currentFlowLayer.colorAlpha).hex());
   //c.setAlpha(particlesAlpha);
   fill(c);
 
@@ -105,7 +174,7 @@ function draw() {
       binValue = spectrum[binIdx];
       binValue /= 255.0;
       //console.log("Bin value : " + binValue * 50);
-      circle(p.x, p.y, 1 + binValue * 100);
+      circle(p.x, p.y, currentFlowLayer.baseSize + binValue * currentFlowLayer.sizeFactor);
       //console.log("particule  : " + x + " pos x : "  + p.x + " y : " + p.y);
       //console.log("deltaTime  : " + deltaTime);
       const n = NoiseMapGetAt(p.x, p.y);
@@ -127,6 +196,16 @@ function draw() {
 
     if( particlesAlive == 0)
     {
+      console.log('All particules of layer ' + activeFlowLayerIdx + ' add dead, jump to next layer is any');
+      activeFlowLayerIdx++;
+      if( activeFlowLayerIdx >= flowLayers.length )
+      {
+        console.log('No more layer , stop the sketch');
+        isDrawing = false;
+      } 
+      else{
+        GenerateParticles();
+      }
       // switch flow field layer
     }
   }
@@ -135,11 +214,11 @@ function draw() {
 
 function togglePlay() {
   if (sound.isPlaying()) {
-    isRunning = false;
+    isDrawing = false;
     console.log('pause audio play');
     sound.pause();
   } else {
-    isRunning = true;
+    isDrawing = true;
     console.log('start audio play');
     sound.play();
   }
@@ -171,11 +250,34 @@ function KeepInside(p)
   // }
 }
 
+function GenerateParticles()
+{
+  if( activeFlowLayerIdx >= flowLayers.length) return;
+  
+  currentFlowLayer = flowLayers[activeFlowLayerIdx];
+
+  // clear previous data
+  particles.length = 0;
+  particulesToBins.clear();
+
+  particlesCount = flowLayers[activeFlowLayerIdx].numberOfParticles;
+  particlesAlive = particlesCount;
+  for( x = 0; x < particlesCount; x++)
+    {
+      const p = new Particle(random(width), random(height));
+      //const p = new Particle(width * 0.5, height * 0.95);
+      //p.setVelocity( random() * 100, random() * 100);
+      p.setTimeToLive(flowLayers[activeFlowLayerIdx].timeToLiveSec);
+      particles.push(p);
+      particulesToBins[x] = floor(random(0, binsCount / 2));
+    }
+}
+
 let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.005;
+let noiseScale = 0.01;
 let noiseXOffset = 0;
 let noiseYOffset = 0;
 let noiseOctaveNumber = 4;
@@ -203,7 +305,7 @@ function NoiseMapGenerate(nmWidth, nmHeight)
     for( let j = 0; j < noiseMapHeight; j++)
     {
       const noiseIndex = (j * noiseMapWidth) + i;
-      const noiseVal = noise( i * noiseScale, j * noiseScale);
+      const noiseVal = noise( noiseXOffset + i * noiseScale, noiseYOffset + j * noiseScale);
 
       if( noiseVal > noiseMapMaxNoise) noiseMapMaxNoise = noiseVal;
       if( noiseVal < noiseMapMinNoise) noiseMapMinNoise = noiseVal;
