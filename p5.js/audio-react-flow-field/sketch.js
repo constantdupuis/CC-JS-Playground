@@ -21,6 +21,7 @@ let particlesCount = 100;
 let noiseSpeed = 80;
 let particlesAlpha = 0.16;
 let particlesAlive = particlesCount;
+let noiseRotation = 360;
 
 let sound;
 let binsCount;
@@ -60,7 +61,8 @@ function setup() {
     console.log("chroma = " + chroma);
     //colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
     //colorScale = chroma.scale(['#219C90', '#FFF455', '#FFC700', '#EE4E4E']);
-    colorScale = chroma.scale(['#fafa6e', '#2A4858']);
+    //colorScale = chroma.scale(['#fafa6e', '#2A4858']);
+    colorScale = chroma.scale(['#2A4858', '#fafa6e']);
     console.log("colorScale = " + colorScale);
 
     let fl = new FlowFieldLayer();
@@ -138,9 +140,11 @@ function setup() {
     const c = color( colorScale(0.0).hex() );
     console.log("Color : " + c);
     background(c);
-    //NoiseMapDraw();
+    NoiseMapDraw();
     // Turn off the draw loop.
-    //noLoop();
+    noLoop();
+
+    noiseRotation = random(0,360);
 }
 
 
@@ -179,8 +183,8 @@ function draw() {
       //console.log("deltaTime  : " + deltaTime);
       const n = NoiseMapGetAt(p.x, p.y);
       //console.log("noise pour particule  : " + x + "  = "  + n);
-      const vx = cos(n*360) * noiseSpeed;
-      const vy = sin(n*360) * noiseSpeed;
+      const vx = cos(n*noiseRotation) * noiseSpeed;
+      const vy = sin(n*noiseRotation) * noiseSpeed;
       //console.log("new velocity x : " + vx + "  y :"  + vy);
       p.setVelocity(vx, vy);
       p.update(deltaTime);
@@ -277,17 +281,18 @@ let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.01;
+let noiseScale = 0.05;
 let noiseXOffset = 0;
 let noiseYOffset = 0;
 let noiseOctaveNumber = 4;
 let noiseOctaveFalloff = 0.45;
-let noiseMapSeed = 484623458921; //49852321
+let noiseMapSeed = -1; //484623458921; //49852321
 let noiseMapMaxNoise = 0;
 let noiseMapMinNoise = 1;
 
 function NoiseMapGenerate(nmWidth, nmHeight)
 {
+
   console.time('generate noisemap');
   noiseMap = [];
   noiseMapWidth = nmWidth;

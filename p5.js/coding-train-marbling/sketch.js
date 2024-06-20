@@ -1,7 +1,7 @@
 let drops = [];
 function setup() {
   createCanvas(1600, 800);
-  background(220);
+  background(255);
 }
 
 function keyPressed() {
@@ -12,12 +12,9 @@ function keyPressed() {
 
 // let isMousePressed = false;
 
-// function mousePressed(event) {
-//   console.log('mousePressed');
-//   isMousePressed = true;
-//   // let drop = new Drop(mouseX, mouseY,100);
-//   addInk(mouseX, mouseY,random(10,50));
-// }
+function mousePressed(event) {
+  addInk(mouseX, mouseY,random(10,50));
+}
 // /**
 //  * This function is called when the mouse is moved.
 //  * @param {MouseEvent} event - The `MouseEvent` that is passed as an argument.
@@ -67,7 +64,7 @@ function draw() {
   // let r = random(10,50);
   // addInk(x,y ,r);
 
-  background(225);
+  background(255);
   for (let drop of drops) {
     drop.draw();
   }
