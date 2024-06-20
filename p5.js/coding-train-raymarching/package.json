@@ -1,0 +1,15 @@
+{
+  "name": "coding-train-raymarching",
+  "version": "1.0.0",
+  "main": "sketch.js",
+  "scripts": {
+    "start": "browser-sync start --server --files \"*\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "browser-sync": "^3.0.2"
+  }
+}
+
