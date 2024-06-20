@@ -1,8 +1,8 @@
 const circleDetail = 100;
 
-//let colorScale = chroma.scale(['#fafa6e', '#2A4858']);
+let colorScale = chroma.scale(['#fafa6e', '#2A4858']);
 //let colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
-let colorScale = chroma.scale(['#219C90', '#FFF455', '#FFC700', '#EE4E4E']);
+//let colorScale = chroma.scale(['#219C90', '#FFF455', '#FFC700', '#EE4E4E']);
 
 class Drop {
   constructor(x, y, r) {
