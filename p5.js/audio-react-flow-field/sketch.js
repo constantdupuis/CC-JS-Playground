@@ -87,7 +87,7 @@ function draw() {
       binValue = spectrum[binIdx];
       binValue /= 255.0;
       //console.log("Bin value : " + binValue * 50);
-      circle(p.x, p.y, 1 + binValue * 100);
+      circle(p.x, p.y, 1 + binValue * 50);
       //console.log("particule  : " + x + " pos x : "  + p.x + " y : " + p.y);
       //console.log("deltaTime  : " + deltaTime);
       const n = NoiseMapGetAt(p.x, p.y);
