@@ -2,8 +2,8 @@
 let objects = [];
 let ray;
 function setup() {
-  createCanvas(800, 800);
-  for( let i = 0; i < 3;i++)
+  createCanvas(1200, 800);
+  for( let i = 0; i < 10; i++)
   {
     let r = random(10,50); 
     let x = random(r, width - r);
@@ -17,16 +17,13 @@ function setup() {
 function draw() 
 {
   background(0);
-  //ray.show();
   for( let s of objects)
   {
     s.show();
   }
 
   ray.march(objects);
-
-  // const d = signedDistance( ray, stuff[0]);
-  // ray.show(d);
+  ray.rotate(0.1 * (deltaTime/1000));
 }
 
 function signedDistance(a, b, r)

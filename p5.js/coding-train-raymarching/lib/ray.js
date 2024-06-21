@@ -9,7 +9,7 @@ class Ray {
     {
         let current = this.pos.copy();
         let counter = 0;
-        let maxIteration = 3;
+        let maxIteration = 10;
         
 
         while(counter < maxIteration)
@@ -28,13 +28,16 @@ class Ray {
             }
 
             if( shortestDistance < 5){
+                //console.log('Next object shortest distance very short, leave the loop');
                 break;
             }
 
             const v  = p5.Vector.fromAngle(this.angle, shortestDistance);
 
             push();
-            stroke(255,counter*50 ,200);
+            //stroke(255,counter*50 ,200);
+            stroke(255, 0 ,200);
+            strokeWeight(1);
             noFill();
             translate(current.x, current.y);
             ellipse(0, 0, shortestDistance * 2);
@@ -42,10 +45,30 @@ class Ray {
             pop();
 
             current.add(v);
+            if( this.offScreen( current))
+            {
+                //console.log('Ray start pos off screen, leave the loop');
+                break;
+            }
 
             counter++;
         }
+
+        stroke(0,0,255);
+        strokeWeight(4);
+        line(this.pos.x, this.pos.y, current.x, current.y);
+
         //this.show(record);
+    }
+
+    offScreen( pos )
+    {
+        return ( pos.x > width || pos.x < 0 || pos.y > height || pos.y < 0);
+    }
+
+    rotate(angle)
+    {
+        this.angle += angle;
     }
 
     // show(len)
