@@ -3,7 +3,7 @@ let objects = [];
 let ray;
 function setup() {
   createCanvas(1200, 800);
-  for( let i = 0; i < 10; i++)
+  for( let i = 0; i < 50; i++)
   {
     let r = random(10,50); 
     let x = random(r, width - r);

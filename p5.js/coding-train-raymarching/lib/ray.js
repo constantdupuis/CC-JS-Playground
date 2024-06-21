@@ -1,4 +1,7 @@
 class Ray {
+
+    colorScale = chroma.scale(['#2A4858', '#fafa6e']);
+
     constructor(x, y, angle)
     {
         this.pos = createVector(x,y);
@@ -9,7 +12,7 @@ class Ray {
     {
         let current = this.pos.copy();
         let counter = 0;
-        let maxIteration = 10;
+        let maxIteration = 20;
         
 
         while(counter < maxIteration)
@@ -35,10 +38,15 @@ class Ray {
             const v  = p5.Vector.fromAngle(this.angle, shortestDistance);
 
             push();
-            //stroke(255,counter*50 ,200);
-            stroke(255, 0 ,200);
-            strokeWeight(1);
-            noFill();
+            
+
+            //stroke(255, 0 ,200);
+            //strokeWeight(1);
+            //noFill();
+            let c = color( this.colorScale(counter/maxIteration).hex() );
+            fill(c);
+            noStroke();
+
             translate(current.x, current.y);
             ellipse(0, 0, shortestDistance * 2);
             //line(0, 0, v.x, v.y);
@@ -54,16 +62,16 @@ class Ray {
             counter++;
         }
 
-        stroke(0,0,255);
-        strokeWeight(4);
-        line(this.pos.x, this.pos.y, current.x, current.y);
-
-        //this.show(record);
+        //stroke(0,0,255);
+        //strokeWeight(4);
+        //line(this.pos.x, this.pos.y, current.x, current.y);
     }
 
     offScreen( pos )
     {
-        return ( pos.x > width || pos.x < 0 || pos.y > height || pos.y < 0);
+        let halfWidth = width/2;
+        let halfHeight = height/2;
+        return ( pos.x > width+halfWidth || pos.x < -halfWidth || pos.y > height+halfHeight || pos.y < -halfHeight);
     }
 
     rotate(angle)

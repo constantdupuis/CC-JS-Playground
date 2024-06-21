@@ -7,7 +7,7 @@ class Boundary {
     show()
     {
         noFill();
-        stroke(255);
+        stroke(80);
         strokeWeight(1);
         circle(this.pos.x, this.pos.y, this.r * 2);
     }
