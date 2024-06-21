@@ -1,6 +1,7 @@
 class Ray {
 
-    colorScale = chroma.scale(['#2A4858', '#fafa6e']);
+    //colorScale = chroma.scale(['#2A4858', '#fafa6e']);
+    colorScale = chroma.scale(['#604CC3', '#80C4E9','#FFF6E9', '#FF7F3E']);
 
     constructor(x, y, angle)
     {
