@@ -7,7 +7,7 @@ class FlowFieldLayer
   colorRampIndex = 0.20;
   colorAlpha = 0.16;
   baseSize = 1;
-  sizeFactor = 10;
+  sizeFactor = 2;
   speed = 100;
 }
 
@@ -17,10 +17,10 @@ let activeFlowLayerIdx = 0;
 
 
 let particles = [];
-let particlesCount = 100;
-let noiseSpeed = 80;
+let particlesCount = 5000; // not used anymore with particles layers
+let noiseSpeed = 70;
 let particlesAlpha = 0.16;
-let particlesAlive = particlesCount;
+let particlesAlive = particlesCount; // not used anymore with particles layers
 let noiseRotation = 360;
 
 let sound;
@@ -41,6 +41,12 @@ function preload()
   console.timeEnd('load audio file');
 }
 
+function keyPressed() {
+  if ((key == 'S') || (key == 's')) {
+    saveCanvas('audio-react-flow-field.jpg');
+  }
+}
+
 function setup() {
     //SetCanvasSize();
     const canvas = createCanvas(1200, 800);
@@ -57,68 +63,77 @@ function setup() {
 
     NoiseMapGenerate(width, height);
     NoiseMapShowStats();
+    NoiseMapNormalize();
 
     console.log("chroma = " + chroma);
     //colorScale = chroma.scale(['#3AA6B9', '#FFD0D0', '#FF9EAA', '#F9F9E0']);
     //colorScale = chroma.scale(['#219C90', '#FFF455', '#FFC700', '#EE4E4E']);
     //colorScale = chroma.scale(['#fafa6e', '#2A4858']);
-    colorScale = chroma.scale(['#2A4858', '#fafa6e']);
+    //colorScale = chroma.scale(['#2A4858', '#fafa6e']);
+    //colorScale = chroma.scale(['#E76F51', '#F4A261','#E9C46A', '#36BA98']); // test 1
+    //colorScale = chroma.scale(['#973131', '#E0A75E','#F9D689', '#F5E7B2']); // test 2
+    //colorScale = chroma.scale(['#B1AFFF', '#BBE9FF','#FFFED3', '#FFE9D0']); // test 3
+    //colorScale = chroma.scale(['#0C1844', '#C80036','#FF6969', '#FFF5E1']); // test 4
+    //colorScale = chroma.scale(['#000000', '#FF0000']);
+    colorScale = chroma.scale(['#2F3645', '#FFE9D0']);
+    
+    
     console.log("colorScale = " + colorScale);
 
     let fl = new FlowFieldLayer();
-    fl.timeToLiveSec = 10;
+    fl.timeToLiveSec = 20;
     fl.baseSize = 1;
-    fl.sizeFactor = 200;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 0.25;
     fl.colorAlpha = 0.05;
-    fl.numberOfParticles = 100;
+    fl.numberOfParticles = 5000;
     fl.speed = 60;
     flowLayers.push(fl);
 
     fl = new FlowFieldLayer();
     fl.timeToLiveSec = 10;
     fl.baseSize = 1;
-    fl.sizeFactor = 100;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 0.35;
     fl.colorAlpha = 0.05;
-    fl.numberOfParticles = 100;
+    fl.numberOfParticles = 3000;
     fl.speed = 60;
     flowLayers.push(fl);
 
     fl = new FlowFieldLayer();
     fl.timeToLiveSec = 10;
     fl.baseSize = 1;
-    fl.sizeFactor = 80;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 0.45;
     fl.colorAlpha = 0.05;
-    fl.numberOfParticles = 100;
+    fl.numberOfParticles = 2000;
     fl.speed = 60;
     flowLayers.push(fl);
 
     fl = new FlowFieldLayer();
     fl.timeToLiveSec = 15;
     fl.baseSize = 1;
-    fl.sizeFactor = 50;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 0.65;
     fl.colorAlpha = 0.05;
-    fl.numberOfParticles = 100;
+    fl.numberOfParticles = 1000;
     fl.speed = 60;
     flowLayers.push(fl);
 
     fl = new FlowFieldLayer();
     fl.timeToLiveSec = 20;
     fl.baseSize = 1;
-    fl.sizeFactor = 20;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 0.85;
     fl.colorAlpha = 0.05;
-    fl.numberOfParticles = 100;
+    fl.numberOfParticles = 500;
     fl.speed = 60;
     flowLayers.push(fl);
 
     fl = new FlowFieldLayer();
     fl.timeToLiveSec = 30;
     fl.baseSize = 1;
-    fl.sizeFactor = 10;
+    fl.sizeFactor = 2;
     fl.colorRampIndex = 1.0;
     fl.colorAlpha = 0.05;
     fl.numberOfParticles = 100;
@@ -140,9 +155,9 @@ function setup() {
     const c = color( colorScale(0.0).hex() );
     console.log("Color : " + c);
     background(c);
-    NoiseMapDraw();
+    //NoiseMapDraw();
     // Turn off the draw loop.
-    noLoop();
+    //noLoop();
 
     noiseRotation = random(0,360);
 }
@@ -200,7 +215,7 @@ function draw() {
 
     if( particlesAlive == 0)
     {
-      console.log('All particules of layer ' + activeFlowLayerIdx + ' add dead, jump to next layer is any');
+      console.log('All particules of layer ' + activeFlowLayerIdx + ' add dead, jump to next layer if any');
       activeFlowLayerIdx++;
       if( activeFlowLayerIdx >= flowLayers.length )
       {
@@ -266,6 +281,7 @@ function GenerateParticles()
 
   particlesCount = flowLayers[activeFlowLayerIdx].numberOfParticles;
   particlesAlive = particlesCount;
+  console.log("Generate a new layer of particles with " + particlesCount + " particles");
   for( x = 0; x < particlesCount; x++)
     {
       const p = new Particle(random(width), random(height));
@@ -281,11 +297,11 @@ let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.05;
+let noiseScale = 0.004;
 let noiseXOffset = 0;
 let noiseYOffset = 0;
-let noiseOctaveNumber = 4;
-let noiseOctaveFalloff = 0.45;
+let noiseOctaveNumber = 2;
+let noiseOctaveFalloff = 0.50;
 let noiseMapSeed = -1; //484623458921; //49852321
 let noiseMapMaxNoise = 0;
 let noiseMapMinNoise = 1;
@@ -319,6 +335,21 @@ function NoiseMapGenerate(nmWidth, nmHeight)
     }
   }
   console.timeEnd('generate noisemap');
+}
+
+function NoiseMapNormalize()
+{
+  console.time('Normalize NoiseMap');
+  for( let i = 0; i < noiseMapWidth; i++)
+    {
+      for( let j = 0; j < noiseMapHeight; j++)
+      {
+        const noiseIndex = (j * noiseMapWidth) + i;
+         
+        noiseMap[noiseIndex] = map( noiseMap[noiseIndex], noiseMapMinNoise, noiseMapMaxNoise, 0, 1 );
+      }
+    }
+    console.timeEnd('Normalize NoiseMap');
 }
 
 function NoiseMapGetAt(x,y)
