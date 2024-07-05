@@ -1,89 +1,27 @@
 
-class ParticleSystem
-{
 
-}
-class Particle
-{
-  x = 0;
-  y = 0;
-  vx = 0;
-  vy = 0;
-  ttl = -1000;
-
-  constructor( posx, posy)
-  {
-    this.x = posx;
-    this.y = posy;
-    this.ttl = -1000;
-  }
-
-  setVelocity( nvx, nvy)
-  {
-    this.vx = nvx;
-    this.vy = nvy;
-  }
-
-  update( deltaTime)
-  {
-    const lDeltaTime = deltaTime/1000; // milliseconds to seconds
-
-    this.x += this.vx * lDeltaTime;
-    this.y += this.vy * lDeltaTime;
-
-    if( this.ttl != -1000 )
-    {
-      if( this.ttl > 0)
-      {
-        //console.log("ttl before update : " + this.ttl + " deltaTime : " + lDeltaTime);
-        this.ttl -= lDeltaTime;
-        //console.log("ttl after update : " + this.ttl);
-        if( this.ttl < 0) 
-        {
-          //console.log("particle is dead");
-          this.ttl = 0;
-        }
-      }
-    }
-  }
-
-  setTimeToLive( ttl)
-  {
-    this.ttl = ttl;
-  }
-
-  immortal()
-  {
-    this.ttl = -1000;
-  }
-
-  get isDead()
-  {
-    if( this.ttl == -1000) return false;
-    if( this.ttl == 0) return true;
-    return false;
-  }
-
-  get isAlive()
-  {
-    if( this.ttl == -1000) return true;
-    if( this.ttl > 0) return true;
-    return false;
-  }
-
-  toString()
-  {
-    return "Particle x : " + this.x + " y : " + this.y;
-  }
-}
 
 let particles = [];
-let particlesCount = 1000;
-let noiseSpeed = 150;
+let particlesCount = 5000;
+let noiseSpeed = 25;
+let alivedPaticlesCount = particlesCount;
+
+//let colorScale = chroma.scale(['#DEF9C4', '#468585']);
+//let colorScale = chroma.scale(['#D6EFD8', '#1A5319']);
+//let colorScale = chroma.scale(['#EEEEEE', '#DC5F00']);
+//let colorScale = chroma.scale(['#DAD3BE', '#002125']);
+//let colorScale = chroma.scale(['#002125', '#DAD3BE']); // 10/10
+let colorScale = chroma.scale(['#00112A', '#6BDFDB']);
+
+function keyPressed() {
+  if ((key == 'S') || (key == 's')) {
+    saveCanvas('noise-flow-field.jpg');
+  }
+}
 
 function setup() {
-    //SetCanvasSize();
-    createCanvas(800, 800);
+
+    createCanvas(2560, 1600);
     angleMode(DEGREES);
 
     // Noise settings
@@ -92,42 +30,40 @@ function setup() {
 
     NoiseMapGenerate(width, height);
     NoiseMapShowStats();
+    NoiseMapNormalize();
+    NoiseMapShowStats();
 
     for( x = 0; x < particlesCount; x++)
     {
       const p = new Particle(random(width), random(height));
+
       //const p = new Particle(width * 0.5, height * 0.95);
       //p.setVelocity( random() * 100, random() * 100);
-      p.setTimeToLive(5 + random(5));
+      p.setTimeToLive(120 + random(60));
       particles.push(p);
     }
-
-    background(220);
+    let c = color(colorScale(0.0).alpha(1.0).hex());
+    background(c);
     //NoiseMapDraw();
     // Turn off the draw loop.
     //noLoop();
 }
-
-
-// function windowResized() {
-//   console.log("windowResized");
-//   SetCanvasSize();
-// }
-
-
 
 function draw() {
   
   //stroke(0, 32);
   noStroke();
   //noFill();
-  fill(0, 8);
+  //fill(0, 8);
+  let colorRampIndex = random(0.25,1);
+  let c = color(colorScale(0.25+colorRampIndex).alpha(0.1).hex());
+  fill(c);
   for( x = 0; x < particlesCount; x++)
   {
     const p = particles[x];
     if( p.isAlive ){
       //point(p.x, p.y);
-      circle(p.x, p.y, 5);
+      circle(p.x, p.y, 2);
       //console.log("particule  : " + x + " pos x : "  + p.x + " y : " + p.y);
       //console.log("deltaTime  : " + deltaTime);
       const n = NoiseMapGetAt(p.x, p.y);
@@ -138,6 +74,17 @@ function draw() {
       p.setVelocity(vx, vy);
       p.update(deltaTime);
       KeepInside(p);
+    }
+    else 
+    {
+      if( alivedPaticlesCount > 0)
+        alivedPaticlesCount--;
+      if( alivedPaticlesCount === 0)
+      {
+        console.log('All particles are dead, stop looping');
+        noLoop();
+        break;
+      }
     }
 
   }
@@ -151,32 +98,15 @@ function KeepInside(p)
     p.x = random(width);
     p.y = random(height);
   }
-  // if( p.x < 0 ) 
-  // {
-  //   p.x = width-1;
-  // }
-  // else if(p.x >= width)
-  // {
-  //   p.x = 0;
-  // }
-
-  // if( p.y < 0 ) 
-  // {
-  //   p.y = height-1;
-  // }
-  // else if(p.y >= height)
-  // {
-  //   p.y = 0;
-  // }
 }
 
 let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.005;
-let noiseOctaveNumber = 4;
-let noiseOctaveFalloff = 0.45;
+let noiseScale = 0.003;
+let noiseOctaveNumber = 2;
+let noiseOctaveFalloff = 0.25;
 let noiseMapSeed = 48462321; //49852321
 let noiseMapMaxNoise = 0;
 let noiseMapMinNoise = 1;
@@ -245,14 +175,19 @@ function NoiseMapShowStats()
   console.log("Noise Max :  " + noiseMapMaxNoise);
 }
 
-function SetCanvasSize()
+function NoiseMapNormalize()
 {
-  
-  // Set size base on HTML body size
-  //const bodyEl = select('body');
-  //console.log("BODY width " + bodyEl.width + " height " + bodyEl.height)
-  //resizeCanvas(bodyEl.width * 0.95, bodyEl.height * 0.95);
-
-  // Set a fixed size
-  resizeCanvas(800, 800);
+  console.time('Normalize NoiseMap');
+  for( let i = 0; i < noiseMapWidth; i++)
+    {
+      for( let j = 0; j < noiseMapHeight; j++)
+      {
+        const noiseIndex = (j * noiseMapWidth) + i;
+         
+        noiseMap[noiseIndex] = map( noiseMap[noiseIndex], noiseMapMinNoise, noiseMapMaxNoise, 0, 1 );
+      }
+    }
+    noiseMapMinNoise = 0;
+    noiseMapMaxNoise = 1;
+    console.timeEnd('Normalize NoiseMap');
 }
