@@ -2,26 +2,29 @@
 
 
 let particles = [];
-let particlesCount = 5000;
-let noiseSpeed = 25;
+let particlesCount = 10000;
+let noiseSpeed = 20;
 let alivedPaticlesCount = particlesCount;
 
 //let colorScale = chroma.scale(['#DEF9C4', '#468585']);
 //let colorScale = chroma.scale(['#D6EFD8', '#1A5319']);
 //let colorScale = chroma.scale(['#EEEEEE', '#DC5F00']);
 //let colorScale = chroma.scale(['#DAD3BE', '#002125']);
-//let colorScale = chroma.scale(['#002125', '#DAD3BE']); // 10/10
-let colorScale = chroma.scale(['#00112A', '#6BDFDB']);
+let colorScale = chroma.scale(['#002125', '#DAD3BE']); // 10/10
+//let colorScale = chroma.scale(['#DAD3BE', '#002125']);
+//let colorScale = chroma.scale(['#00112A', '#6BDFDB']);
 
 function keyPressed() {
   if ((key == 'S') || (key == 's')) {
+    console.time('Save canvas to png');
     saveCanvas('noise-flow-field.jpg');
+    console.timeEnd('Save canvas to png');
   }
 }
 
 function setup() {
 
-    createCanvas(2560, 1600);
+    createCanvas(1600, 2560);
     angleMode(DEGREES);
 
     // Noise settings
@@ -39,7 +42,7 @@ function setup() {
 
       //const p = new Particle(width * 0.5, height * 0.95);
       //p.setVelocity( random() * 100, random() * 100);
-      p.setTimeToLive(120 + random(60));
+      p.setTimeToLive(60 + random(60));
       particles.push(p);
     }
     let c = color(colorScale(0.0).alpha(1.0).hex());
