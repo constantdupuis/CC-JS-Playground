@@ -96,7 +96,15 @@ function line_clipped(
   
     /* Only draw the line if it was not rejected */
     if (accept)
+    {
+      x0 = Math.round(x0);
+      y0 = Math.round(y0);
+      x1 = Math.round(x1);
+      y1 = Math.round(y1);
+      //console.log(`Clipped line (${x0},${y0} ->  ${x1},${y1})`);
       line(x0, y0, x1, y1);
+    }
+      
   
     return accept;
   }
@@ -113,9 +121,10 @@ function draw_square( x, y, w, lineSteps, lineAngle)
     let upAccept = true;
     
     let i = 0;
-    
+
     //for (int i = 0; i < w / lineSteps; i++) {
     while (downAccept || upAccept) {
+      //console.log(`draw_square iteration ${i}`);
       let x0 = x - w/2;
       let y0 = slope * x0 + c + i * lineSteps / cos(lineAngle);
       let x1 = x + w + w/2;
