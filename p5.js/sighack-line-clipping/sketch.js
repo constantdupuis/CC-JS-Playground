@@ -3,23 +3,13 @@
 //colorScale = chroma.scale(['#78ABA8', '#C8CFA0','#FCDC94', '#EF9C66']);
 //colorScale = chroma.scale(['#1A5319', '#508D4E','#80AF81', '#D6EFD8']);
 //colorScale = chroma.scale(['#468585', '#50B498','#9CDBA6', '#DEF9C4']);
-<<<<<<< HEAD
 //colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']);
 colorScale = chroma.scale(['#323232', '#323232']);
 
 function setup() {
-  //createCanvas(2560, 1600);
-  createCanvas(1920 , 1200);
-=======
-//colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']); // 10/10
-//colorScale = chroma.scale(['#E2D0C1', '#382100']);
-//colorScale = chroma.scale(['#A2B8B4', '#002F38']);
+  createCanvas(2560, 1600);
+  //createCanvas(1600 , 2560);
 
-colorScale = chroma.scale(['#A2B8B4', '#003826']);
-
-function setup() {
-  createCanvas(1600, 2560);
->>>>>>> 368529a55676319963d4fcb76dd24b0549a5dfe5
   noLoop();
 }
 
