@@ -6,7 +6,7 @@
 //colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']);
 colorScale = chroma.scale(['#323232', '#323232']);
 
-let cellWidth = 50;
+let cellWidth = 40;
 let halfCellWidth = 25;
 let xCellCounts = 0;
 let yCellCounts = 0;
@@ -16,7 +16,8 @@ let noiseScale = 0.1;
 function setup() {
   //createCanvas(2560, 1600);
   //createCanvas(1600 , 2560);
-  createCanvas(1600 , 1000);
+  //createCanvas(1600 , 1000);
+  createCanvas(1920 , 1200);
 
   xCellCounts = Math.ceil(width / cellWidth) ;
   yCellCounts = Math.ceil(height / cellWidth) ;
@@ -33,6 +34,10 @@ function draw()
 
   noiseSeed(Date.now() + 789165416);
 
+  cellWidth = 40;
+  xCellCounts = Math.ceil(width / cellWidth) ;
+  yCellCounts = Math.ceil(height / cellWidth) ;
+
   for( let i = 0; i < xCellCounts; i++)
   {
     for( let j = 0; j < yCellCounts; j++)
@@ -43,32 +48,42 @@ function draw()
       //fill(noiseVal * 255, 0, 0, 255/3);
       //fill(noiseVal * 255);
       //rect( i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-      stroke(noiseVal * 255,0,0);
-      draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
+      stroke(0,255,255,(noiseVal * 255)/1.2);
+      strokeWeight( 1 + random(3));
+      draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
       //rect( i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
     }
   }
 
   noiseSeed(Date.now() + 32165944987);
 
+  cellWidth = 50;
+  xCellCounts = Math.ceil(width / cellWidth);
+  yCellCounts = Math.ceil(height / cellWidth);
+
   for( let i = 0; i < xCellCounts; i++)
+  {
+    for( let j = 0; j < yCellCounts; j++)
     {
-      for( let j = 0; j < yCellCounts; j++)
-      {
-        let noiseVal = noise(width+i*noiseScale, width+j*noiseScale);
-        noiseVal *= noiseVal; 
-        //console.log(`noise value ${noiseVal}`);
-        //fill(noiseVal * 255);
-        //fill(0, noiseVal * 255, 0, 255/3);
-        //rect( width /2 + i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-        stroke(0,noiseVal * 255,0);
-        draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
-        //rect(  i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
-      }
+      let noiseVal = noise(width+i*noiseScale, width+j*noiseScale);
+      noiseVal *= noiseVal; 
+      //console.log(`noise value ${noiseVal}`);
+      //fill(noiseVal * 255);
+      //fill(0, noiseVal * 255, 0, 255/3);
+      //rect( width /2 + i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
+      stroke(255,255,0, (noiseVal * 255)/1.2);
+      strokeWeight( 1 + random(3));
+      draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
+      //rect(  i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
     }
+  }
 
 
   noiseSeed(Date.now() + 44987321659);
+
+  cellWidth = 20;
+  xCellCounts = Math.ceil(width / cellWidth);
+  yCellCounts = Math.ceil(height / cellWidth);
 
   for( let i = 0; i < xCellCounts; i++)
     {
@@ -80,8 +95,9 @@ function draw()
         //fill(noiseVal * 255);
         //fill(0, noiseVal * 255, 0, 255/3);
         //rect( i * halfCellWidth,  height /2 + j * halfCellWidth, halfCellWidth, halfCellWidth);
-        stroke(0,0,noiseVal * 255);
-        draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
+        stroke(255,0,255, (noiseVal * 255)/1.2);
+        strokeWeight( 1 + random(3));
+        draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
         //rect( i * cellWidth,  + j * cellWidth, cellWidth, cellWidth);
       }
     }
@@ -145,7 +161,15 @@ function draw()
 
 function keyPressed() {
   if ((key == 'S') || (key == 's')) {
-    saveCanvas('line-clipping.jpg');
+    console.log('Save canvas');
+    const date = new Date();
+    let month = (date.getMonth() + 1).toString();
+    month = month.padStart(2,'0');
+    let day = date.getDate().toString();
+    day = day.padStart(2, '0');
+    const formattedDate = `${date.getFullYear()}_${month}_${day}`;
+    console.log(formattedDate);
+    saveCanvas(`line-clipping-color-${formattedDate}-${width}x${height}.jpg`);
   }
 }
 
