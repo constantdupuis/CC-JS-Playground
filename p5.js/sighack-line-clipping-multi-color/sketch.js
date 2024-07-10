@@ -6,7 +6,7 @@
 //colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']);
 colorScale = chroma.scale(['#323232', '#323232']);
 
-let cellWidth = 25;
+let cellWidth = 50;
 let halfCellWidth = 25;
 let xCellCounts = 0;
 let yCellCounts = 0;
@@ -31,7 +31,7 @@ function draw()
   
   noStroke();
 
-  noiseSeed(789165416);
+  noiseSeed(Date.now() + 789165416);
 
   for( let i = 0; i < xCellCounts; i++)
   {
@@ -40,14 +40,16 @@ function draw()
       let noiseVal = noise(i*noiseScale, j*noiseScale);
       noiseVal *= noiseVal;
       //console.log(`noise value ${noiseVal}`);
-      fill(noiseVal * 255, 0, 0, 255/3);
+      //fill(noiseVal * 255, 0, 0, 255/3);
       //fill(noiseVal * 255);
       //rect( i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-      rect( i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
+      stroke(noiseVal * 255,0,0);
+      draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
+      //rect( i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
     }
   }
 
-  noiseSeed(32165944987);
+  noiseSeed(Date.now() + 32165944987);
 
   for( let i = 0; i < xCellCounts; i++)
     {
@@ -57,14 +59,16 @@ function draw()
         noiseVal *= noiseVal; 
         //console.log(`noise value ${noiseVal}`);
         //fill(noiseVal * 255);
-        fill(0, noiseVal * 255, 0, 255/3);
+        //fill(0, noiseVal * 255, 0, 255/3);
         //rect( width /2 + i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-        rect(  i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
+        stroke(0,noiseVal * 255,0);
+        draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
+        //rect(  i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
       }
     }
 
 
-  noiseSeed(44987321659);
+  noiseSeed(Date.now() + 44987321659);
 
   for( let i = 0; i < xCellCounts; i++)
     {
@@ -74,9 +78,11 @@ function draw()
         noiseVal *= noiseVal; 
         //console.log(`noise value ${noiseVal}`);
         //fill(noiseVal * 255);
-        fill(0, noiseVal * 255, 0, 255/3);
+        //fill(0, noiseVal * 255, 0, 255/3);
         //rect( i * halfCellWidth,  height /2 + j * halfCellWidth, halfCellWidth, halfCellWidth);
-        rect( i * cellWidth,  + j * cellWidth, cellWidth, cellWidth);
+        stroke(0,0,noiseVal * 255);
+        draw_square( i * cellWidth,  j * cellWidth, cellWidth, 10 - random(2), random(TWO_PI));
+        //rect( i * cellWidth,  + j * cellWidth, cellWidth, cellWidth);
       }
     }
 
