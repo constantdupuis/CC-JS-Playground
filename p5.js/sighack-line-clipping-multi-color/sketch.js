@@ -4,7 +4,13 @@
 //colorScale = chroma.scale(['#1A5319', '#508D4E','#80AF81', '#D6EFD8']);
 //colorScale = chroma.scale(['#468585', '#50B498','#9CDBA6', '#DEF9C4']);
 //colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']);
-colorScale = chroma.scale(['#323232', '#323232']);
+//colorScale = chroma.scale(['#FF7EE2', '#FFA38F','#FFD18E', '#E9FF97']);
+colorScale = chroma.scale(['#B60071', '#E4003A','#EB5B00', '#FFB200']);
+
+
+let color1;
+let color2;
+let color3;
 
 let cellWidth = 40;
 let halfCellWidth = 25;
@@ -19,8 +25,16 @@ function setup() {
   //createCanvas(1600 , 1000);
   createCanvas(1920 , 1200);
 
-  xCellCounts = Math.ceil(width / cellWidth) ;
-  yCellCounts = Math.ceil(height / cellWidth) ;
+  // color1 = color(0,255,255);
+  // color2 = color(255,255,0);
+  // color3 = color(255,0,255);
+
+  color1 = color(colorScale(0.0).hex());
+  color2 = color(colorScale(0.5).hex());
+  color3 = color(colorScale(1.0).hex());
+
+  // xCellCounts = Math.ceil(width / cellWidth) ;
+  // yCellCounts = Math.ceil(height / cellWidth) ;
 
   noLoop();
 }
@@ -29,12 +43,13 @@ function draw()
 {
   background(255);
 
+  let alphaDivider = 1.0;
   
   noStroke();
 
   noiseSeed(Date.now() + 789165416);
 
-  cellWidth = 40;
+  cellWidth = 20;
   xCellCounts = Math.ceil(width / cellWidth) ;
   yCellCounts = Math.ceil(height / cellWidth) ;
 
@@ -48,7 +63,9 @@ function draw()
       //fill(noiseVal * 255, 0, 0, 255/3);
       //fill(noiseVal * 255);
       //rect( i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-      stroke(0,255,255,(noiseVal * 255)/1.2);
+      color1.setAlpha((noiseVal * 255)/alphaDivider);
+      stroke(color1);
+      //stroke(0,255,255,(noiseVal * 255)/1.2);
       strokeWeight( 1 + random(3));
       draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
       //rect( i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
@@ -57,7 +74,7 @@ function draw()
 
   noiseSeed(Date.now() + 32165944987);
 
-  cellWidth = 50;
+  cellWidth = 30;
   xCellCounts = Math.ceil(width / cellWidth);
   yCellCounts = Math.ceil(height / cellWidth);
 
@@ -71,7 +88,9 @@ function draw()
       //fill(noiseVal * 255);
       //fill(0, noiseVal * 255, 0, 255/3);
       //rect( width /2 + i * halfCellWidth,  j * halfCellWidth, halfCellWidth, halfCellWidth);
-      stroke(255,255,0, (noiseVal * 255)/1.2);
+      //stroke(255,255,0, (noiseVal * 255)/1.2);
+      color2.setAlpha((noiseVal * 255)/alphaDivider);
+      stroke(color2);
       strokeWeight( 1 + random(3));
       draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
       //rect(  i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
@@ -81,7 +100,7 @@ function draw()
 
   noiseSeed(Date.now() + 44987321659);
 
-  cellWidth = 20;
+  cellWidth = 10;
   xCellCounts = Math.ceil(width / cellWidth);
   yCellCounts = Math.ceil(height / cellWidth);
 
@@ -95,68 +114,15 @@ function draw()
         //fill(noiseVal * 255);
         //fill(0, noiseVal * 255, 0, 255/3);
         //rect( i * halfCellWidth,  height /2 + j * halfCellWidth, halfCellWidth, halfCellWidth);
-        stroke(255,0,255, (noiseVal * 255)/1.2);
+        //stroke(255,0,255, (noiseVal * 255)/1.2);
+        color3.setAlpha((noiseVal * 255)/alphaDivider);
+        stroke(color3);
         strokeWeight( 1 + random(3));
         draw_square( i * cellWidth,  j * cellWidth, cellWidth, 6 - random(2), random(TWO_PI));
         //rect( i * cellWidth,  + j * cellWidth, cellWidth, cellWidth);
       }
     }
-
-    // for( let i = 0; i < xCellCounts; i++)
-    //   {
-    //     for( let j = 0; j < yCellCounts; j++)
-    //     {
-    //       let noiseVal = noise(i*noiseScale, j*noiseScale);
-    //       //console.log(`noise value ${noiseVal}`);
-    //       fill(0, 0, noiseVal * 255, 255/3);
-    //       rect( i * cellWidth,  j * cellWidth, cellWidth, cellWidth);
-    //     }
-    //   }
-
-  return;
-
-  noFill();
-  stroke(0);
-  strokeWeight(1);
-
-  let squareW = 1000;
-
-  let c = color( colorScale(0.0).alpha(0.25).hex() );
-  stroke(c);
-
-  squareW = 15;
-
-  for( let i = 0; i < width; i += squareW)
-    for( let j = 0; j< height; j += squareW)
-      draw_square( i, j, squareW, 4 - random(2), random(TWO_PI));
-
-
-  c = color( colorScale(0.55).alpha(0.25).hex() );
-  stroke(c);
-
-  squareW = 50;
-
-  for( let i = 0; i < width; i += squareW)
-    for( let j = 0; j< height; j += squareW)
-      draw_square( i, j, squareW, 4 - random(2), random(TWO_PI));
-  
-  c = color( colorScale(0.85).alpha(0.25).hex() );
-  stroke(c);
-
-  squareW = 50;
-
-  for( let i = 0; i < width; i += squareW)
-    for( let j = 0; j< height; j += squareW)
-      draw_square( i, j, squareW, 4 - random(2), random(TWO_PI));
-
-  c = color( colorScale(1.0).alpha(0.25).hex() );
-  stroke(c);
-
-  squareW = 100;
-
-  for( let i = 0; i < width; i += squareW)
-    for( let j = 0; j< height; j += squareW)
-      draw_square( i, j, squareW, 4 - random(2), random(TWO_PI));
+ 
 }
 
 function keyPressed() {
@@ -167,7 +133,11 @@ function keyPressed() {
     month = month.padStart(2,'0');
     let day = date.getDate().toString();
     day = day.padStart(2, '0');
-    const formattedDate = `${date.getFullYear()}_${month}_${day}`;
+    let hours = date.getHours().toString().padStart(2, '0');
+    let minutes = date.getMinutes().toString().padStart(2, '0');
+    let seconds = date.getSeconds().toString().padStart(2, '0');
+
+    const formattedDate = `${date.getFullYear()}${month}${day}${hours}${minutes}${seconds}`;
     console.log(formattedDate);
     saveCanvas(`line-clipping-color-${formattedDate}-${width}x${height}.jpg`);
   }
