@@ -57,14 +57,6 @@ function drawSimpleOverlayedSquares()
   stroke(0);
   strokeWeight(1);
 
-
-  // for( let i = 0; i < width; i += squareW)
-  //   for( let j = 0; j< height; j += squareW)
-  //     draw_square( i, j, squareW, 50, PI / 5.123);
-
-
-  // return;
-
   noiseSeed(Date.now() + 789165416);
 
   cellWidth = 40;
@@ -115,20 +107,12 @@ function drawSimpleOverlayedSquares()
 function drawPerlinNoiseBaseSquares()
 {
 
-  let alphaDivider = 1.1;
+  let alphaDivider = 1.0;
   background(255);
 
   noFill();
   stroke(0);
   strokeWeight(1);
-
-
-  // for( let i = 0; i < width; i += squareW)
-  //   for( let j = 0; j< height; j += squareW)
-  //     draw_square( i, j, squareW, 50, PI / 5.123);
-
-
-  // return;
 
   noiseSeed(Date.now() + 789165416);
 
@@ -147,10 +131,6 @@ function drawPerlinNoiseBaseSquares()
       draw_square( i * cellWidth, j * cellWidth, cellWidth, 4 - random(2), random(TWO_PI));
   }
       
-
-  // c = color( colorScale(0.55).alpha(0.25).hex() );
-  // stroke(c);
-
   noiseSeed(Date.now() + 85349231);
 
 
@@ -169,10 +149,6 @@ function drawPerlinNoiseBaseSquares()
     draw_square( i * cellWidth, j * cellWidth, cellWidth, 4 - random(2), random(TWO_PI));
   }
       
-   
-  // c = color( colorScale(0.85).alpha(0.25).hex() );
-  //  stroke(c);
-
   cellWidth = 10;
   xCellCounts = Math.ceil(width / cellWidth) ;
   yCellCounts = Math.ceil(height / cellWidth) ;
@@ -187,18 +163,7 @@ function drawPerlinNoiseBaseSquares()
     strokeWeight( 1 + random(3));
     draw_square( i * cellWidth, j * cellWidth, cellWidth, 4 - random(2), random(TWO_PI));
   }
-     
-
-  // c = color( colorScale(1.0).alpha(0.25).hex() );
-  // stroke(c);
-
-  // cellWidth = 100;
-  // xCellCounts = Math.ceil(width / cellWidth) ;
-  // yCellCounts = Math.ceil(height / cellWidth) ;
-
-  // for( let i = 0; i < width; i += cellWidth)
-  //   for( let j = 0; j< height; j += cellWidth)
-  //     draw_square( i, j, cellWidth, 4 - random(2), random(TWO_PI));
+ 
 }
 
 function mousePressed(event) {}
