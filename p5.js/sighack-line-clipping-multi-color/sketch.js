@@ -5,9 +5,9 @@
 //colorScale = chroma.scale(['#468585', '#50B498','#9CDBA6', '#DEF9C4']);
 //colorScale = chroma.scale(['#131842', '#E68369','#ECCEAE', '#FBF6E2']);
 //colorScale = chroma.scale(['#FF7EE2', '#FFA38F','#FFD18E', '#E9FF97']);
-//colorScale = chroma.scale(['#B60071', '#E4003A','#EB5B00', '#FFB200']); // 8/10
+colorScale = chroma.scale(['#B60071', '#E4003A','#EB5B00', '#FFB200']); // 8/10
 //colorScale = chroma.scale(['#E76F51', '#F4A261','#E9C46A', '#36BA98']); // 5/10
-colorScale = chroma.scale(['#DD761C', '#FEB941','#FDE49E', '#6DC5D1']); // x/10
+//colorScale = chroma.scale(['#DD761C', '#FEB941','#FDE49E', '#6DC5D1']); // x/10
 
 
 
@@ -28,13 +28,17 @@ function setup() {
   //createCanvas(1600 , 1000);
   createCanvas(1920 , 1200);
 
-  color1 = color(0,100,100); // RGB
-  color2 = color(250,250,0); // RGB
-  color3 = color(180,0,110); // RGB
+  // color1 = color(0,255,255); // RGB
+  // color2 = color(255,255,0); // RGB
+  // color3 = color(255,0,255); // RGB
 
-  // color1 = color(colorScale(0.0).hex());
-  // color2 = color(colorScale(0.5).hex());
-  // color3 = color(colorScale(1.0).hex());
+  // color1 = color(0,100,100); // RGB
+  // color2 = color(250,250,0); // RGB
+  // color3 = color(180,0,110); // RGB
+
+  color1 = color(colorScale(0.0).hex());
+  color2 = color(colorScale(0.5).hex());
+  color3 = color(colorScale(1.0).hex());
 
   // xCellCounts = Math.ceil(width / cellWidth) ;
   // yCellCounts = Math.ceil(height / cellWidth) ;
@@ -46,7 +50,7 @@ function draw()
 {
   background(225);
 
-  let alphaDivider = 1.0;
+  let alphaDivider = 1.1;
   
   noStroke();
 

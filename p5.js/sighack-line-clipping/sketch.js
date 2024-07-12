@@ -19,8 +19,8 @@ function setup() {
   //createCanvas(1600, 1000);
   createCanvas(1920, 1200);
 
-  xCellCounts = Math.ceil(width / cellWidth) ;
-  yCellCounts = Math.ceil(height / cellWidth) ;
+  // xCellCounts = Math.ceil(width / cellWidth) ;
+  // yCellCounts = Math.ceil(height / cellWidth) ;
 
   noLoop();
 }
