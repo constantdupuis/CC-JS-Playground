@@ -154,7 +154,7 @@ function drawPerlinNoiseBaseSquares()
   yCellCounts = Math.ceil(height / cellWidth) ;
 
   for( let i = 0; i < xCellCounts; i++)
-    for( let j = 0; j< yCellCount; j++)
+    for( let j = 0; j< yCellCounts; j++)
   {
     let noiseVal = noise(width + i*noiseScale,  height + j*noiseScale);
     noiseVal *= noiseVal;
