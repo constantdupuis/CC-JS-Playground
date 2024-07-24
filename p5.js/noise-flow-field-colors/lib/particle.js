@@ -9,7 +9,7 @@ class Particle
   vx = 0;
   vy = 0;
   ttl = -1000;
-  ttl01 = 0;
+  ttlStart = 0;
 
   constructor( posx, posy)
   {
@@ -50,11 +50,25 @@ class Particle
   setTimeToLive( ttl )
   {
     this.ttl = ttl;
+    this.ttlStart = ttl;
   }
 
   immortal()
   {
     this.ttl = -1000;
+  }
+
+  get ttl()
+  {
+    return this.ttl;
+  }
+
+  get ttl01()
+  {
+    //console.log('ttl01');
+    let r = this.ttl / this.ttlStart;
+    //console.log(`ttl01 r ${r}`);
+    return 1.0 - r;
   }
 
   get isDead()

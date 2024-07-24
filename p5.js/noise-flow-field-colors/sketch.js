@@ -10,21 +10,27 @@ let alivedPaticlesCount = particlesCount;
 //let colorScale = chroma.scale(['#D6EFD8', '#1A5319']);
 //let colorScale = chroma.scale(['#EEEEEE', '#DC5F00']);
 //let colorScale = chroma.scale(['#DAD3BE', '#002125']);
-let colorScale = chroma.scale(['#002125', '#DAD3BE']); // 10/10
+//let colorScale = chroma.scale(['#002125', '#DAD3BE']); // 10/10
 //let colorScale = chroma.scale(['#DAD3BE', '#002125']);
 //let colorScale = chroma.scale(['#00112A', '#6BDFDB']);
+
+//let colorScale = chroma.scale(['#173B45', '#B43F3F', '#FF8225', '#F8EDED']);
+let colorScale = chroma.scale(['#B5C18E', '#F7DCB9', '#DEAC80', '#914F1E']);
+
+//let colorScale = chroma.scale(['#FF0000', '#00FF00']);
 
 function keyPressed() {
   if ((key == 'S') || (key == 's')) {
     console.time('Save canvas to png');
-    saveCanvas('noise-flow-field.jpg');
+    saveCanvas('colored-noise-flow-field.jpg');
     console.timeEnd('Save canvas to png');
   }
 }
 
 function setup() {
 
-    createCanvas(1600, 2560);
+    //createCanvas(1600, 2560);
+    createCanvas(800, 800);
     angleMode(DEGREES);
 
     // Noise settings
@@ -42,7 +48,9 @@ function setup() {
 
       //const p = new Particle(width * 0.5, height * 0.95);
       //p.setVelocity( random() * 100, random() * 100);
-      p.setTimeToLive(60 + random(60));
+      //p.setTimeToLive(60 + random(60));
+      p.setTimeToLive(30 + random(30));
+      //p.setTimeToLive(5);
       particles.push(p);
     }
     let c = color(colorScale(0.0).alpha(1.0).hex());
@@ -58,14 +66,18 @@ function draw() {
   noStroke();
   //noFill();
   //fill(0, 8);
-  let colorRampIndex = random(0.25,1);
-  let c = color(colorScale(0.25+colorRampIndex).alpha(0.1).hex());
-  fill(c);
+  //let colorRampIndex = random(0.25,1);
+  //let c = color(colorScale(0.25+colorRampIndex).alpha(0.1).hex());
+  //fill(c);
+  let c;
   for( x = 0; x < particlesCount; x++)
   {
     const p = particles[x];
     if( p.isAlive ){
       //point(p.x, p.y);
+      //console.log(`Particle ${x} ttl01 ${p.ttl01}`);
+      c = color(colorScale(p.ttl01).alpha(0.1).hex());
+      fill(c);
       circle(p.x, p.y, 2);
       //console.log("particule  : " + x + " pos x : "  + p.x + " y : " + p.y);
       //console.log("deltaTime  : " + deltaTime);

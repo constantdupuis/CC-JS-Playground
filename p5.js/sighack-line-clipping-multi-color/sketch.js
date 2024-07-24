@@ -26,7 +26,7 @@ function setup() {
   //createCanvas(2560, 1600);
   //createCanvas(1600 , 2560);
   //createCanvas(1600 , 1000);
-  createCanvas(1920 , 1200);
+  createCanvas(windowWidth , windowHeight);
 
   // color1 = color(0,255,255); // RGB
   // color2 = color(255,255,0); // RGB
