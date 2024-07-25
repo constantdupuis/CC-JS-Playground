@@ -2,7 +2,7 @@
 
 
 let particles = [];
-let particlesCount = 10000;
+let particlesCount = 4000;
 let noiseSpeed = 20;
 let alivedPaticlesCount = particlesCount;
 
@@ -14,8 +14,9 @@ let alivedPaticlesCount = particlesCount;
 //let colorScale = chroma.scale(['#DAD3BE', '#002125']);
 //let colorScale = chroma.scale(['#00112A', '#6BDFDB']);
 
-//let colorScale = chroma.scale(['#173B45', '#B43F3F', '#FF8225', '#F8EDED']);
-let colorScale = chroma.scale(['#B5C18E', '#F7DCB9', '#DEAC80', '#914F1E']);
+let colorScale = chroma.scale(['#173B45', '#B43F3F', '#FF8225', '#F8EDED']);
+//let colorScale = chroma.scale(['#F8EDED', '#FF8225', '#B43F3F','#173B45' ]);
+//let colorScale = chroma.scale(['#B5C18E', '#F7DCB9', '#DEAC80', '#914F1E']);
 
 //let colorScale = chroma.scale(['#FF0000', '#00FF00']);
 
@@ -30,7 +31,8 @@ function keyPressed() {
 function setup() {
 
     //createCanvas(1600, 2560);
-    createCanvas(800, 800);
+    //createCanvas(800, 800);
+    createCanvas(1600, 900);
     angleMode(DEGREES);
 
     // Noise settings
@@ -48,8 +50,11 @@ function setup() {
 
       //const p = new Particle(width * 0.5, height * 0.95);
       //p.setVelocity( random() * 100, random() * 100);
+      p.setTimeToLive(500 + random(500));
+      //p.setTimeToLive(220 + random(220));
+      //p.setTimeToLive(120 + random(120));
       //p.setTimeToLive(60 + random(60));
-      p.setTimeToLive(30 + random(30));
+      //p.setTimeToLive(30 + random(30));
       //p.setTimeToLive(5);
       particles.push(p);
     }
@@ -87,7 +92,8 @@ function draw() {
       const vy = sin(n*360) * noiseSpeed;
       //console.log("new velocity x : " + vx + "  y :"  + vy);
       p.setVelocity(vx, vy);
-      p.update(deltaTime);
+      //p.update(deltaTime);
+      p.update(100);
       KeepInside(p);
     }
     else 
@@ -119,10 +125,10 @@ let noiseMap = [];
 let noiseMapWidth = 0;
 let noiseMapHeight = 0;
 let noiseMapSize = 0;
-let noiseScale = 0.003;
-let noiseOctaveNumber = 2;
-let noiseOctaveFalloff = 0.25;
-let noiseMapSeed = 48462321; //49852321
+let noiseScale = 0.0035;// 0.003
+let noiseOctaveNumber = 4;
+let noiseOctaveFalloff = 0.5;
+let noiseMapSeed = -1; //48462321; //49852321
 let noiseMapMaxNoise = 0;
 let noiseMapMinNoise = 1;
 
