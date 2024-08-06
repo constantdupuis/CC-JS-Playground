@@ -18,6 +18,17 @@
             {
                 border : 1px solid lightgray; 
                 box-shadow: 3px 3px 5px gray;
+            } 
+            
+            #doneMarker {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: #f0f0f0;
+                padding: 10px;
+                border: 1px solid #ccc;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                display: none; /* Initially hidden */
             }
         </style>
         <title>p5.js first again</title>
@@ -26,8 +37,9 @@
     <script src="lib/p5/addons/p5.sound.min.js"></script>
     <script src="lib/chroma.min.js"></script>
     <script src="lib/particle.js"></script>
+    <script src="lib/noisemap.js"></script>
     <script src="sketch.js"></script>
     <body>
-
+        <div id="doneMarker">Hello, I am a bottom-right element!</div>
     </body>
 </html>
