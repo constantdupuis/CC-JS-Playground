@@ -33,7 +33,8 @@ function setup() {
 
     particleSystem = new ParticleSystem(5000);
     particleSystem.setLocationBoundaries(0,1600,0, 900);
-    particleSystem.setTimeToLive(500,1000);
+    //particleSystem.setTimeToLive(500,1000);
+    particleSystem.setTimeToLive(500);
     particleSystem.generateParticles();
 
     let c = color(colorScale(0.1).alpha(1.0).hex());
