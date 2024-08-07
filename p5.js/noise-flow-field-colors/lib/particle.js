@@ -26,24 +26,27 @@ class ParticleSystem
     this.maxY = maxY;
   }
 
-  setTimeToLive(minTTL, maxTTL)
+  setTimeToLiveFromTo(minTTL, maxTTL)
   {
+    console.log(`setTimeToLive between [${minTTL},${maxTTL}]`);
     this.minTTL = minTTL;
     this.maxTTL = maxTTL;
   }
 
-  setTimeToLive( ttl)
+  setTimeToLive(TTL)
   {
+    console.log(`setTimeToLive to ${TTL}`);
     this.minTTL = 0;
-    this.maxTTL = ttl;
+    this.maxTTL = TTL;
   }
 
   generateParticles()
   {
     for( let x = 0; x < this.particleCount; x++)
     {
-      const p = new Particle(this.minX + random(this.maxX-this.minX), this.minY + random(this.maxY-this.minY));
-      p.setTimeToLive(this.minTTL + random(this.maxTTL-this.minTTL));
+      const pp = this.rebirthParams();
+      const p = new Particle(pp.posX, pp.posY);
+      p.setTimeToLive(pp.timeToLive);
       //console.log(`new particle  (${p.x}x${p.y}) ttl ${p.ttl}`);
       this.particles.push(p);
     }
@@ -53,11 +56,41 @@ class ParticleSystem
   rebirthParticles()
   {
     this.forEach( (p, index) =>{
-      p.x = this.minX + random(this.maxX-this.minX);
-      p.y = this.minY + random(this.maxY-this.minY);
-      p.setTimeToLive(this.minTTL + random(this.maxTTL-this.minTTL));
+      const pp = this.rebirthParams();
+      p.x = pp.posX;
+      p.y = pp.posY;
+      p.setTimeToLive(p.timeToLive);
     });
     this.aliveParticlesCount = this.particleCount;
+  }
+
+  rebirthParams()
+  {
+    return this.horizontallyCenteredRebirthParams();
+  }
+
+  defaultRebirthParams()
+  {
+    let posx = this.minX + random(this.maxX-this.minX);
+    let posy = this.minY + random(this.maxY-this.minY);
+    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    return { posX : posx, posY : posy, timeToLive : timetolive};
+  }
+
+  centeredRebirthParams()
+  {
+    let posx = (this.maxX-this.minX) / 2;
+    let posy = (this.maxY-this.minY) / 2;
+    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    return { posX : posx, posY : posy, timeToLive : timetolive};
+  }
+
+  horizontallyCenteredRebirthParams()
+  {
+    let posx = this.minX + random(this.maxX-this.minX);
+    let posy = (this.maxY-this.minY) / 2;
+    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    return { posX : posx, posY : posy, timeToLive : timetolive};
   }
 
   update(deltaTimeMillis)
@@ -74,8 +107,9 @@ class ParticleSystem
         if( p.x < this.minX || p.x > this.maxX || p.y < this.minY || p.y > this.maxY)
         {
           console.log(`update particle out of bounds, reset it inside boundaries`);
-          p.x = this.minX + random(this.maxX-this.minX);
-          p.y = this.minY + random(this.maxY-this.minY);
+          const pp = this.rebirthParams();
+          p.x = pp.posX;
+          p.y = pp.posY;
         }
       }
     });
