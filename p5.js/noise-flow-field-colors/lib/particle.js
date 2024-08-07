@@ -66,7 +66,7 @@ class ParticleSystem
 
   rebirthParams()
   {
-    return this.horizontallyCenteredRebirthParams();
+    return this.centeredRingRebirthParams();
   }
 
   defaultRebirthParams()
@@ -91,6 +91,18 @@ class ParticleSystem
     let posy = (this.maxY-this.minY) / 2;
     let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
     return { posX : posx, posY : posy, timeToLive : timetolive};
+  }
+
+  centeredRingRebirthParams()
+  {
+    const ra = random(TWO_PI);
+    let height = this.maxY - this.minY;
+    let width = this.maxX - this.minX;
+    let radius = height * 0.25 - random(height*0.1);
+    let x = cos(ra) * radius;
+    let y = sin(ra) * radius;
+    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    return { posX : width * 0.5 + x, posY : height * 0.5 + y, timeToLive : timetolive};
   }
 
   update(deltaTimeMillis)

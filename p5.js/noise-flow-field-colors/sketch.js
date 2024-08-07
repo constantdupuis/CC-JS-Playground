@@ -9,9 +9,11 @@
 
 //let colorScale = chroma.scale(['#173B45', '#B43F3F', '#FF8225', '#F8EDED']); // 8/10
 //let colorScale = chroma.scale(['#F8EDED', '#FF8225', '#B43F3F','#173B45' ]);
-let colorScale = chroma.scale(['#B5C18E', '#F7DCB9', '#DEAC80', '#914F1E']);
+//let colorScale = chroma.scale(['#B5C18E', '#F7DCB9', '#DEAC80', '#914F1E']);
 
 //let colorScale = chroma.scale(['#FF0000', '#00FF00']);
+
+let colorScale = chroma.scale(['#1A3636', '#677D6A']);
 
 let noiseMap;
 let particleSystem;
@@ -33,11 +35,11 @@ function setup() {
 
     particleSystem = new ParticleSystem(5000);
     particleSystem.setLocationBoundaries(0,1600,0, 900);
-    //particleSystem.setTimeToLiveFromTo(500,1000);
-    particleSystem.setTimeToLive(60 * 5);
+    particleSystem.setTimeToLiveFromTo(30, 60);
+    //particleSystem.setTimeToLive(60 * 1); // Time to live in seconds
     particleSystem.generateParticles();
 
-    let c = color(colorScale(0.1).alpha(1.0).hex());
+    let c = color(colorScale(0.01).alpha(1.0).hex());
     background(c);
 
     hideDoneMarker();
