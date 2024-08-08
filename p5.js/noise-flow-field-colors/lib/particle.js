@@ -13,9 +13,12 @@ class ParticleSystem
   minTTL = 0;
   maxTTL = 100;
 
+  rebirthParamsFonction = (ctx) => {};
+
   constructor( particleCount )
   {
     this.particleCount = particleCount;
+    this.rebirthParamsFonction = ParticleSystem.defaultRebirthParams;
   }
 
   setLocationBoundaries(minX, maxX, minY, maxY)
@@ -25,6 +28,8 @@ class ParticleSystem
     this.minY = minY;
     this.maxY = maxY;
   }
+
+  set
 
   setTimeToLiveFromTo(minTTL, maxTTL)
   {
@@ -38,6 +43,11 @@ class ParticleSystem
     console.log(`setTimeToLive to ${TTL}`);
     this.minTTL = 0;
     this.maxTTL = TTL;
+  }
+
+  setRebirthParamsFunction(fn)
+  {
+    this.rebirthParamsFonction = fn;
   }
 
   generateParticles()
@@ -66,42 +76,42 @@ class ParticleSystem
 
   rebirthParams()
   {
-    return this.centeredRingRebirthParams();
+    const context = { 
+      minX : this.minX, maxX : this.maxX, 
+      minY : this.minY, maxY : this.maxY,  
+      minTTL : this.minTTL, maxTTL : this.maxTTL
+    };
+    return this.rebirthParamsFonction(context);
   }
 
-  defaultRebirthParams()
+  static defaultRebirthParams( ctx )
   {
-    let posx = this.minX + random(this.maxX-this.minX);
-    let posy = this.minY + random(this.maxY-this.minY);
-    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    let posx = ctx.minX + random(ctx.maxX-ctx.minX);
+    let posy = ctx.minY + random(ctx.maxY-ctx.minY);
+    let timetolive = ctx.minTTL + random(ctx.maxTTL-ctx.minTTL);
     return { posX : posx, posY : posy, timeToLive : timetolive};
   }
 
-  centeredRebirthParams()
+
+
+  static horizontallyCenteredRebirthParams( ctx )
   {
-    let posx = (this.maxX-this.minX) / 2;
-    let posy = (this.maxY-this.minY) / 2;
-    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    let posx = ctx.minX + random(ctx.maxX-ctx.minX);
+    const lheight = ctx.maxY-ctx.minY;
+    let posy = lheight / 2 + random(lheight * -0.1, lheight * 0.1);
+    let timetolive = ctx.minTTL + random(ctx.maxTTL-ctx.minTTL);
     return { posX : posx, posY : posy, timeToLive : timetolive};
   }
 
-  horizontallyCenteredRebirthParams()
-  {
-    let posx = this.minX + random(this.maxX-this.minX);
-    let posy = (this.maxY-this.minY) / 2;
-    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
-    return { posX : posx, posY : posy, timeToLive : timetolive};
-  }
-
-  centeredRingRebirthParams()
+  static centeredRingRebirthParams( ctx )
   {
     const ra = random(TWO_PI);
-    let height = this.maxY - this.minY;
-    let width = this.maxX - this.minX;
-    let radius = height * 0.25 - random(height*0.1);
+    let height = ctx.maxY - ctx.minY;
+    let width = ctx.maxX - ctx.minX;
+    let radius = height * 0.40 - random(height*0.1);
     let x = cos(ra) * radius;
     let y = sin(ra) * radius;
-    let timetolive = this.minTTL + random(this.maxTTL-this.minTTL);
+    let timetolive = ctx.minTTL + random(ctx.maxTTL-ctx.minTTL);
     return { posX : width * 0.5 + x, posY : height * 0.5 + y, timeToLive : timetolive};
   }
 
