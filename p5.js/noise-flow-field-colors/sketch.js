@@ -40,7 +40,7 @@ function setup() {
     //noiseMap.normalize();
 
     particleSystem = new ParticleSystem(5000);
-    particleSystem.setLocationBoundaries(0,1600,0, 900);
+    particleSystem.setLocationSize(1600, 900);
     particleSystem.setTimeToLiveFromTo(60, 120);
     particleSystem.setRebirthParamsFunction( ParticleSystem.centeredRingRebirthParams);
     //particleSystem.setTimeToLive(60 * 1); // Time to live in seconds

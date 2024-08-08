@@ -29,7 +29,10 @@ class ParticleSystem
     this.maxY = maxY;
   }
 
-
+  setLocationSize(width, height)
+  {
+    this.setLocationBoundaries(0, width, 0, height);
+  }
 
   setTimeToLiveFromTo(minTTL, maxTTL)
   {
